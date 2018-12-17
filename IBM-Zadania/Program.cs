@@ -1,72 +1,141 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IBM_Zadania
 {
     class Program
     {
+        private static Algorithms algorithms = new Algorithms();
+
         static void Main(string[] args)
         {
-            int[] array = { 1, 2, 3, 4 };
-            ShiftArray(ref array, 1);
-
-            for (int i = 0; i < array.Length; i++)
-			{
-	            Console.WriteLine("element: " + array[i] );
-			}
+            LongestRow();
+            Coins();
+            ReverseStringExceptA();
+            MissingN();
+            ArrayShift();
+            DuplicateString();
+            ReverseString();
             Console.ReadLine();
         }
 
 
-        /*
-         * 	Given an array and a number as parameters. The array contains the range of positive integer number from 1 to N
-         *  - except one - without duplication in random order. Write a method which returns the missing number after checking  
-         *  if the collection is valid for the requirements (returns 0 in invalid cases).
-         *  
-         * Examples:
-         *  list: 1,2,3,4,6,7,8,9 n:9 result:5
-         *  list:2,6,7,3,5,8,9,1 n:9 result:4
-         *  list:null n:0 result:0
-         *  list:1,2,3,4,5,6,7,8 n:8 result:0
-         *  list: 1,2,3,4,5,6,7,10 n:9 result:0
-        */
-
-        private static int missingMember(int[] array, int number)
+        private static void LongestRow()
         {
-            if (array == null || number <= 0)
+            Console.WriteLine("Longest Lines: ");
+
+            foreach (string line in algorithms.FindLongestLines("a", "b", "c"))
             {
-                return 0;
+                Console.WriteLine(line);
             }
 
-            HashSet<int> targetSet = new HashSet<int>(Enumerable.Range(1, number).ToArray());
-            HashSet<int> inputSet = new HashSet<int>(array);
+            Console.WriteLine("-----");
 
-            int[] missingNumbers = targetSet.Except(inputSet).ToArray();
+            foreach (string line in algorithms.FindLongestLines("a", "ab", "abc"))
+            {
+                Console.WriteLine(line);
+            }
 
-            return missingNumbers.Length == 1 ? missingNumbers[0] : 0;
+            Console.WriteLine();
         }
 
-
-        /*
-         * Write a Solution which rotate an array element 
-         * (shift it) right by one index, and the last element 
-         * of the array will be moved to the first place.
-         * 
-         * INPUT: A= [3, 8, 9, 7, 6] and K = 3, RESULT: [9, 7, 6, 3, 8]
-         * INPUT: A= [1, 2, 3, 4] and K = 1, RESULT: [4, 1, 2, 3]
-         */
-        public static void ShiftArray(ref int[] array, int shiftAmount)
+        private static void Coins()
         {
-            int[] lookupArray = new int[array.Length];
-            Array.Copy(array, lookupArray, array.Length);
+            Console.WriteLine("Coins count needed to pay:");
+            Console.WriteLine(string.Format("1021: {0} coins", algorithms.GetCoinsCountNeededToPay(1021)));
+            Console.WriteLine();
+        }
 
-            for (int i = 0; i < array.Length; i++)
+        private static void ReverseStringExceptA()
+        {
+            Console.WriteLine("Reverse String Except A:");
+            Console.WriteLine(string.Format("Marek: {0}", algorithms.ReverseStringExceptA("Marek")));
+            Console.WriteLine(string.Format("Monia: {0}", algorithms.ReverseStringExceptA("Monia")));
+            Console.WriteLine();
+        }
+
+        private static void MissingN()
+        {
+            Console.WriteLine("Missing N:");
+            Console.WriteLine(string.Format("Missing number in 1,2,3,4,6,7,8,9: {0}", algorithms.FindMissingMember(new int[] { 1, 2, 3, 4, 6, 7, 8, 9 }, 9)));
+            Console.WriteLine(string.Format("Missing number in 2,6,7,3,5,8,9,1: {0}", algorithms.FindMissingMember(new int[] { 2, 6, 7, 3, 5, 8, 9, 1 }, 9)));
+            Console.WriteLine(string.Format("Missing number in null: {0}", algorithms.FindMissingMember(null, 0)));
+            Console.WriteLine(string.Format("Missing number in 1,2,3,4,5,6,7,8: {0}", algorithms.FindMissingMember(new int[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 8)));
+            Console.WriteLine(string.Format("Missing number in 1,2,3,4,5,6,7,10: {0}", algorithms.FindMissingMember(new int[] { 1, 2, 3, 4, 5, 6, 7, 10 }, 9)));
+            Console.WriteLine();
+        }
+
+        private static void ArrayShift()
+        {
+            Console.WriteLine("ArrayShift:");
+
+            int[] numbers1 = { 3, 8, 9, 7, 6 };
+            int[] numbers2 = { 1, 2, 3, 4 };
+
+            Console.WriteLine("Arrays before shifting: ");
+
+            foreach (int number in numbers1)
             {
-                array[(i + shiftAmount) % array.Length] = lookupArray[i];
+                Console.Write(number + " ");
             }
+
+            Console.WriteLine();
+
+            foreach (int number in numbers2)
+            {
+                Console.Write(number + " ");
+            }
+            Console.WriteLine();
+
+            algorithms.ShiftArray(ref numbers1, 1);
+            algorithms.ShiftArray(ref numbers2, 3);
+
+            Console.WriteLine("Arrays after shifting: ");
+
+            Console.Write("1 Element to right: ");
+            foreach (int number in numbers1)
+            {
+                Console.Write(number + " ");
+            }
+
+            Console.WriteLine();
+
+            Console.Write("3 Elements to right: ");
+            foreach (int number in numbers2)
+            {
+                Console.Write(number + " ");
+            }
+            Console.WriteLine();
+        }
+
+        private static void DuplicateString()
+        {
+            Console.WriteLine("Find and count duplicate letters:");
+
+            Console.WriteLine("Duplicates in: 'Ala'");
+            foreach (var item in algorithms.FindCharacterDuplicates("Ala"))
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine("Duplicates in: 'Ala ma kota'");
+            foreach (var item in algorithms.FindCharacterDuplicates("Ala ma kota"))
+            {
+                Console.WriteLine(item);
+            }
+            Console.WriteLine("Duplicates in: 'International Business Machines'");
+            foreach (var item in algorithms.FindCharacterDuplicates("International Business Machines"))
+            {
+                Console.WriteLine(item);
+            }
+
+        }
+
+        private static void ReverseString()
+        {
+            Console.WriteLine("Reverse a string:");
+            Console.WriteLine(string.Format("Kasia: {0}",algorithms.Reverse("Kasia")));
+            Console.WriteLine(string.Format("Bielsko-Biala: {0}", algorithms.Reverse("Bielsko-Biala")));
+            Console.WriteLine(string.Format("Hello World!: {0}", algorithms.Reverse("Hello World!")));
         }
     }
 }
