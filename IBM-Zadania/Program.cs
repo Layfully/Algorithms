@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace IBM_Zadania
 {
@@ -16,9 +15,9 @@ namespace IBM_Zadania
             ArrayShift();
             DuplicateString();
             ReverseString();
+            StringMathematic();
             Console.ReadLine();
         }
-
 
         private static void LongestRow()
         {
@@ -136,6 +135,15 @@ namespace IBM_Zadania
             Console.WriteLine(string.Format("Kasia: {0}",algorithms.Reverse("Kasia")));
             Console.WriteLine(string.Format("Bielsko-Biala: {0}", algorithms.Reverse("Bielsko-Biala")));
             Console.WriteLine(string.Format("Hello World!: {0}", algorithms.Reverse("Hello World!")));
+        }
+
+        private static void StringMathematic()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Calculate artmetic expression from string:");
+            Console.WriteLine(string.Format("1 + 2 * 4 === {0}  ---- should be equals: {1}", algorithms.Calculate("1 + 2 * 4"), 9));
+            Console.WriteLine(string.Format("2 * (2 + 2 * 2) === {0}  ---- should be equals: {1}", algorithms.Calculate("2 * (2 + 2 * 2)"), 12));
+            Console.WriteLine(string.Format("(1 + 3 * 3) / 2 ===  {0}  ---- should be equals: {1}",algorithms.Calculate("(1 + 3 * 3) / 2"), 5));
         }
     }
 }

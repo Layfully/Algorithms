@@ -50,7 +50,7 @@ namespace IBM_Zadania
          */
         public int GetCoinsCountNeededToPay(int payAmount)
         {
-            IList<int> availableCoins = new List<int> {200, 100, 50, 20, 10, 5, 2, 1};
+            IList<int> availableCoins = new List<int> { 200, 100, 50, 20, 10, 5, 2, 1 };
 
             int coinsCount = 0;
 
@@ -87,10 +87,10 @@ namespace IBM_Zadania
         {
             StringBuilder stringBuilder = new StringBuilder(input);
             stringBuilder.Replace("a", string.Empty);
-            
+
             char[] inputWithoutA = new char[stringBuilder.Length];
             stringBuilder.CopyTo(0, inputWithoutA, 0, stringBuilder.Length);
-            
+
 
             for (int i = 0; i < inputWithoutA.Length + input.Length; i++)
             {
@@ -172,7 +172,7 @@ namespace IBM_Zadania
 
             StringBuilder stringBuilder = new StringBuilder();
 
-            for(int j = words.Length - 1; j >= 0; j--)
+            for (int j = words.Length - 1; j >= 0; j--)
             {
                 int lowerAppendIndex = 0;
 
@@ -215,9 +215,9 @@ namespace IBM_Zadania
         {
             IDictionary<char, int> duplicates = new Dictionary<char, int>();
 
-            for (int  i = 0;  i < input.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
-                if(input[i] == ' ')
+                if (input[i] == ' ')
                 {
                     continue;
                 }
@@ -233,7 +233,7 @@ namespace IBM_Zadania
             }
 
             //Remove all entries which have value of 1.
-            foreach (KeyValuePair<char,int> item in duplicates.Where(keyValue => keyValue.Value.Equals(1)).ToList())
+            foreach (KeyValuePair<char, int> item in duplicates.Where(keyValue => keyValue.Value.Equals(1)).ToList())
             {
                 duplicates.Remove(item.Key);
             }
@@ -250,13 +250,113 @@ namespace IBM_Zadania
 
         public int Calculate(string expression)
         {
-            //DataTable dt = new DataTable();
-            //var v = dt.Compute(expression, "");
+            string onp = ConvertToONP(expression);
 
-            return 0;
+            string[] tokens = onp.Split(' ');
+            Stack<int> stack = new Stack<int>();
+            int number = 0;
+
+            foreach (string token in tokens)
+            {
+                if (int.TryParse(token, out number))
+                {
+                    stack.Push(number);
+                }
+                else
+                {
+                    switch (token)
+                    {
+                        case "*":
+                        {
+                            stack.Push(stack.Pop() * stack.Pop());
+                            break;
+                        }
+                        case "/":
+                        {
+                            number = stack.Pop();
+                            stack.Push(stack.Pop() / number);
+                            break;
+                        }
+                        case "+":
+                        {
+                            stack.Push(stack.Pop() + stack.Pop());
+                            break;
+                        }
+                        case "-":
+                        {
+                            number = stack.Pop();
+                            stack.Push(stack.Pop() - number);
+                            break;
+                        }
+                    }
+                }
+            }
+            return stack.Pop();
+        }
+
+        private string ConvertToONP(string input)
+        {
+            //Parse input so that it can be converted to ONP
+            input = input.Replace("(", "( ");
+            input = input.Replace(")", " )");
+            string[] inputTokens = input.Split(' ');
+
+
+            IDictionary<string, int> prededence = new Dictionary<string, int>() { { "/", 5 }, { "*", 5 }, { "+", 4 }, { "-", 4 }, { "(", 0 } };
+            IList<string> resultTokens = new List<string>();
+
+            Stack<string> ONPStack = new Stack<string>();
+
+            foreach (string token in inputTokens)
+            {
+                if ("(" == token)
+                {
+                    ONPStack.Push(token);
+                    continue;
+                }
+
+                if (")" == token)
+                {
+                    while (!("(" == ONPStack.Peek()))
+                    {
+                        resultTokens.Add(ONPStack.Pop());
+                    }
+                    ONPStack.Pop();
+                    continue;
+                }
+                if (prededence.ContainsKey(token))
+                {
+                    while (!(ONPStack.Count == 0) && prededence[token] <= prededence[ONPStack.Peek()])
+                    {
+                        resultTokens.Add(ONPStack.Pop());
+                    }
+                    ONPStack.Push(token);
+                    continue;
+                }
+
+                if (token.All(char.IsDigit))
+                {
+                    resultTokens.Add(token);
+                    continue;
+                }
+            }
+
+            while (!(ONPStack.Count == 0))
+            {
+                resultTokens.Add(ONPStack.Pop());
+            }
+
+            StringBuilder expressionConvertedToONP = new StringBuilder();
+
+            foreach (string token in resultTokens)
+            {
+                expressionConvertedToONP.Append(token);
+                expressionConvertedToONP.Append(" ");
+            }
+
+            return expressionConvertedToONP.ToString();
         }
     }
 }
- 
- 
- 
+
+
